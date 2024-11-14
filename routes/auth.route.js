@@ -1,9 +1,8 @@
 import express from "express";
+import handleLogin from "../controllers/auth.controller.js";
 
 const router = express.Router();
 
-router.post("/login", (req, res) => {
-  res.json({ message: "Login successful", credentials: { ...req.body } });
-});
+router.post("/login", handleLogin);
 
 export default router;
