@@ -1,24 +1,35 @@
-import { randomBytes, pbkdf2 } from "crypto";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
-export const hashPassword = (password) => {
-  return new Promise((resolve, reject) => {
-    const salt = randomBytes(16).toString("hex");
+// hashing plain password
+export async function hashPassword(password) {
+  try {
+    const saltRounds = 10; // You can adjust this as needed
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    return hashedPassword;
+  } catch (error) {
+    throw new Error("Error hashing password");
+  }
+}
 
-    pbkdf2(password, salt, 1000, 64, "sha512", (err, derivedKey) => {
-      if (err) reject(err);
+// comparting password
+export async function comparePassword(plainPassword, hashedPassword) {
+  try {
+    const isMatch = await bcrypt.compare(plainPassword, hashedPassword);
+    return isMatch; // Returns true if match, false otherwise
+  } catch (error) {
+    throw new Error("Error comparing passwords");
+  }
+}
 
-      resolve(`${salt}:${derivedKey.toString("hex")}`);
-    });
-  });
-};
-
-export const comparePassword = (password, hashed) => {
-  return new Promise((resolve, reject) => {
-    const [salt, key] = hashed.split(":");
-    pbkdf2(password, salt, 1000, 64, "sha512", (err, derivedKey) => {
-      if (err) reject(err);
-
-      resolve(key === derivedKey.toString("hex"));
-    });
-  });
-};
+// JWT token generator
+export async function generateJWTToken(payload) {
+  try {
+    // Secret key
+    const SECRET = "HELd31LO31KE@Y";
+    // generating and returning Token
+    return jwt.sign(payload, SECRET);
+  } catch (error) {
+    throw new Error("Error: ", error);
+  }
+}
