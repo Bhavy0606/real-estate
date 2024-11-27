@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 
 import connectDb from "./db/dbconnect.js";
 import authRoutes from "./routes/auth.route.js";
+import userRoutes from "./routes/user.route.js";
 import authGuard from "./middlewares/auth.middleware.js";
 dotenv.config();
 
@@ -32,11 +33,10 @@ app.get("/", (req, res) => {
   res.send(`<h1>Hello home</h1>`);
 });
 
+app.use("/user", authGuard, userRoutes);
+
 app.get("/about", authGuard, (req, res) => {
   res.send(`<h1>Hello about</h1>`);
-});
-app.get("/posts", authGuard, (req, res) => {
-  res.send(`<h1>Hello posts</h1>`);
 });
 
 // running server on a port
