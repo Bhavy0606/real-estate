@@ -10,9 +10,14 @@ import connectDb from "./db/dbconnect.js";
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
 import authGuard from "./middlewares/auth.middleware.js";
+import multer from "multer";
 dotenv.config();
 
 const PORT = process.env.PORT | 8080;
+
+// Multer configuration
+// const storage = multer.memoryStorage(); // Store files in memory
+// const upload = multer({ storage });
 
 // DB connection
 await connectDb();
@@ -33,9 +38,9 @@ app.get("/", (req, res) => {
   res.send(`<h1>Hello home</h1>`);
 });
 
-app.use("/user", authGuard, userRoutes);
+app.use("/api/user", authGuard, userRoutes);
 
-app.get("/about", authGuard, (req, res) => {
+app.get("/api/about", authGuard, (req, res) => {
   res.send(`<h1>Hello about</h1>`);
 });
 
