@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 import connectDb from "./db/dbconnect.js";
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
+import followRoutes from "./routes/follow.route.js";
 import authGuard from "./middlewares/auth.middleware.js";
 import multer from "multer";
 dotenv.config();
@@ -39,6 +40,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/user", authGuard, userRoutes);
+app.use("/api/follow", authGuard, followRoutes);
 
 app.get("/api/about", authGuard, (req, res) => {
   res.send(`<h1>Hello about</h1>`);

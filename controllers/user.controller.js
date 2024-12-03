@@ -4,6 +4,31 @@ import { getPassword, getUser } from "../services/user.service.js";
 import { comparePassword, hashPassword } from "../services/auth.service.js";
 
 // Get user data
+const getAllUserInfo = async (req, res) => {
+  try {
+    // Assuming the current user's ID is provided in `req.user.id`
+    const currentUserId = req.user.id;
+
+    // Fetch all users excluding the current user and exclude the `hashedPassword` field
+    const users = await User.find(
+      { _id: { $ne: currentUserId } },
+      { hashedPassword: 0 } // Exclude the hashedPassword field
+    );
+
+    res.status(200).json({
+      success: true,
+      data: users,
+    });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching users",
+      error: error.message,
+    });
+  }
+};
+// Get user data
 const getUserInfo = async (req, res) => {
   const _id = req.user._id;
   const user = await User.findById({ _id }, { hashedPassword: 0, __v: 0 });
@@ -123,4 +148,10 @@ const changePassword = async (req, res) => {
   }
 };
 
-export { getUserInfo, uploadProfileImage, updateUserData, changePassword };
+export {
+  getAllUserInfo,
+  getUserInfo,
+  uploadProfileImage,
+  updateUserData,
+  changePassword,
+};

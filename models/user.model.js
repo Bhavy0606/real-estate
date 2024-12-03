@@ -1,14 +1,5 @@
 import mongoose from "mongoose";
 
-// User profile image schema
-const userProfileImage = new mongoose.Schema({
-  name: String,
-  image: {
-    data: Buffer,
-    contentType: String,
-  },
-});
-
 const userSchema = new mongoose.Schema({
   firstname: {
     type: String,
@@ -35,6 +26,43 @@ const userSchema = new mongoose.Schema({
     type: String, // changed from Embedded type to String to store the image path
     required: false, // profile image is optional for the user
   },
+  followers: [
+    {
+      requestId: {
+        type: mongoose.Schema.Types.ObjectId,
+        require: true,
+      },
+      followerId: {
+        type: mongoose.Schema.Types.ObjectId, // Ensures it refers to a `User` by ID
+        ref: "User", // Reference to the `User` model
+        required: true,
+      },
+      status: {
+        type: String,
+        enum: ["ACCEPTED", "NOT_ACCEPTED", "REMOVED"], // Restricts the values for `status`
+        default: "NOT_ACCEPTED", // Default status for a new follow request
+      },
+    },
+  ],
+  following: [
+    {
+      requestId: {
+        type: mongoose.Schema.Types.ObjectId,
+        require: true,
+      },
+      followerId: {
+        type: mongoose.Schema.Types.ObjectId, // Ensures it refers to a `User` by ID
+        ref: "User", // Reference to the `User` model
+        required: true,
+      },
+      status: {
+        type: String,
+        enum: ["ACCEPTED", "PENDING", "DELETED"], // Restricts the values for `status`
+        default: "PENDING", // Default status for a new follow request
+      },
+    },
+  ],
+
   createdAt: {
     type: Date,
     default: Date.now,
@@ -43,5 +71,3 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 export default User;
-
-// export const ProfileImage = mongoose.model("ProfileImage", userProfileImage);
